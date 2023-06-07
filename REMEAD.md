@@ -92,8 +92,11 @@ python2 -m pip install pychrome
 github地址：https://github.com/1354668362/chrome-cdp-burp
 
 # 注意事项
+## jython必须为2.7.1
 
-# 谷歌浏览器必须是用远程调试模式首次开启
+不然无法正常使用
+
+## 谷歌浏览器必须是用远程调试模式首次开启
 
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --remote-allow-origins=*
 
