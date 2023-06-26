@@ -264,9 +264,7 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         MenuItem.add(encrypt_Selected_Response_MenuItem)
         MenuItems.append(MenuItem)
         return MenuItems
-    #整个body的加密函数
     def getbuuton_encrypt_Body(self,event):
-        #请求头加body
         
         tmp_cc = self.encrypt_tmp_Response_text.getText()
         tmp_cc = tmp_cc.replace('"','\\"')
@@ -277,7 +275,6 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         encrypt_string_Selected_Request = self.tab_Selected_encrypt.Debugger.evaluateOnCallFrame(callFrameId=self.callFrameId_str_Selected_repeater,expression=self.tmp1_encrypt_Body+str(tmp_cc)+self.tmp2_encrypt_Body)['result']['value']
         #invocation.getSelectedMessages()[0].setRequest(self.replace_zhi(RequestString_encrypt_Body,currentPayload_Selected_Request_tmp,encrypt_string_Selected_Request))
         self.encrypt_title1_Response_text.setText(encrypt_string_Selected_Request)
-    #整个body解密函数
     def decrypt_Request(self,event):
         tmp_cc_tmp = self.decrypt_tmp_Response_text.getText()
         self.tmp1_Body = self.dncrypt_list[0].replace("u'","'")
@@ -288,9 +285,7 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         except  Exception as e:
             print 'decrypt_Request'
             print e
-    #右击解密
     def decrypt_Selected_Request_def(self,event,invocation):
-        #选中的值
         tmp_decrypt = invocation.getSelectedMessages()[0].getRequest()[invocation.getSelectionBounds()[0]:invocation.getSelectionBounds()[1]].tostring()
         #tmp_cc_tmp = tmp_decrypt.replace('"','\"')
         tmp_cc_tmp_1 = urllib.unquote(tmp_decrypt)
@@ -302,7 +297,6 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         except  Exception as e:
             print 'decrypt_Selected_Request_def'
             print e
-    #右击加密
     def encrypt_Selected_Request_def(self,event,invocation):
         #选中的值
         tmp_encrypt = invocation.getSelectedMessages()[0].getRequest()[invocation.getSelectionBounds()[0]:invocation.getSelectionBounds()[1]].tostring()
@@ -316,7 +310,6 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         except  Exception as e:
             print 'encrypt_Selected_Request_def'
             print e
-    #右击解密
     def decrypt_Selected_Response_def(self,event,invocation):
         #选中的值
         tmp_decrypt_Response = invocation.getSelectedMessages()[0].getResponse()[invocation.getSelectionBounds()[0]:invocation.getSelectionBounds()[1]].tostring()
@@ -331,9 +324,7 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         except  Exception as e:
             print 'decrypt_Selected_Response_def'
             print e
-    #右击加密
     def encrypt_Selected_Response_def(self,event,invocation):
-        #选中的值
         tmp_encrypt_Response = invocation.getSelectedMessages()[0].getResponse()[invocation.getSelectionBounds()[0]:invocation.getSelectionBounds()[1]].tostring()
         #tmp_cc_1 = urllib.unquote(tmp_encrypt)
         tmp_cc_1_Response = tmp_encrypt_Response.replace('"','\\"')
@@ -345,9 +336,7 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         except  Exception as e:
             print 'encrypt_Selected_Response_def'
             print e
-    #gui选中加密之后的值解密
     def cgarset_chrome_cdp(self,event,invocation):
-        #这是爆破模块解密
         tmp1 = self.conent.getSelectedMessages()[0].getRequest()[self.conent.getSelectionBounds()[0]:self.conent.getSelectionBounds()[1]].tostring()
         try:
             self.pp = []
@@ -359,7 +348,6 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
                 self.i = self.i.replace("u'","'")
                 if str(tmp1) in self.i:
                     self.pp = self.i.split(":")
-                    #这里是带'未加密数据'，需要用replace将'去掉
                     self.log_ui.append(u"\u89e3\u5bc6\u503c\u4e3a\uff1a"+self.pp[0].replace("'","")+"\n")
                     ta = JTextArea()
                     ta.setText(self.pp[0].replace("'",""));
@@ -376,7 +364,6 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         except  Exception as e:
             print 'unencrypted_def'
             print e
-    #这是cdp协议返回数据处理用来获取callFrameId_str
     def request_will_be_sent(self,**kwargs):
         return_kwargs = kwargs.get('callFrames')
         callFrameId_str_list_Id = re.findall("u'callFrameId': u'(.*?)'",str(return_kwargs))
@@ -385,25 +372,20 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         self.callFrameId__tmp.setText(self.callFrameId_str)
         self.log_ui.append(u"\u7206\u7834\u529f\u80fd\u0049\u0064\u503c\uff1a"+self.callFrameId_str+u"\u002c\u8bf7\u4e0b\u4e00\u6b65\n")
         print self.callFrameId_str
-     #这是cdp协议返回数据处理用来获取callFrameId_Selected_str
     def request_will_be_sent_Selected_repeater(self,**kwargs):
         return_kwargs = kwargs.get('callFrames')
         callFrameId_str_list_Selected_repeater = re.findall("u'callFrameId': u'(.*?)'",str(return_kwargs))
         self.callFrameId_str_Selected_repeater = callFrameId_str_list_Selected_repeater[0]
-        #设置ui展示
         self.encrypt_callFrameId_Body.setText(self.callFrameId_str_Selected_repeater)
         self.log_ui.append(u"\u7f51\u7ad9\u52a0\u5bc6\u0049\u0064\u503c\uff1a"+self.callFrameId_str_Selected_repeater+u"\u002c\u8bf7\u4e0b\u4e00\u6b65\n")
         print self.callFrameId_str_Selected_repeater
-     #这是cdp协议返回数据处理用来获取callFrameId_str
     def request_will_be_sent_decrypt(self,**kwargs):
         return_kwargs = kwargs.get('callFrames')
         callFrameId_str_list_decrypt = re.findall("u'callFrameId': u'(.*?)'",str(return_kwargs))
         self.callFrameId_str_decrypt = callFrameId_str_list_decrypt[0]
-        #设置ui展示
         self.decrypt_callFrameId__tmp.setText(self.callFrameId_str_decrypt)
         self.log_ui.append(u"\u7f51\u7ad9\u89e3\u5bc6\u0049\u0064\u503c\uff1a"+self.callFrameId_str_decrypt+u"\u002c\u8bf7\u4e0b\u4e00\u6b65\n")
         print self.callFrameId_str_decrypt
-    #清空缓存文件
     def clear_file(self,TextArea1):
         try:
             with io.open(self.file_name,'w',encoding="utf-8") as f:
@@ -411,7 +393,6 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         except  Exception as e:
             print 'clear_file'
             print e
-    #这是在爆破的同时写入文件，为了不阻塞所以创建新的线程
     def Unencrypted_And_Encrypted_Write_Files_Thread(self,arg1,arg2):
         self.worker_thread = Thread(target=self.Unencrypted_And_Encrypted_Write_Files,kwargs={'arg1':arg1,'arg2':arg2})
         self.worker_thread.start() 
@@ -419,17 +400,14 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
     def Unencrypted_And_Encrypted_Write_Files(self,arg1,arg2):
         try:
             with io.open(self.file_name,'a+',encoding="utf-8") as f:
-                #未加密数据和加密数据
                 f.write("'"+arg1+"':'"+arg2+"'\n")
         except  Exception as e:
             print 'Unencrypted_And_Encrypted_Write_Files'
             print e
     
-    #查找callFrameId_str_intruder,因为使用sleep所以创建一个新的线程，不阻塞主进程
     def getbuuton(self,TextArea1):
         self.worker_thread = Thread(target=self.getbuuton1)
         self.worker_thread.start()
-    #这是getbuuton用来获取查找callFrameId_str_intruder的函数
     def getbuuton1(self):
         self.urls ="http://127.0.0.1:9222"
         self.chrome = pychrome.Browser(url=self.urls)
@@ -455,11 +433,9 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         self.encryption_str = self.encryption_code.getText()
         self.encrypt_list = self.encryption_str.split("%%")
         time.sleep(int(self.Interval_time.getText()))
-    #查找callFrameId_str_intruder,因为使用sleep所以创建一个新的线程，不阻塞主进程
     def encrypt_Selected_tmp(self,TextArea1):
         self.worker_thread = Thread(target=self.encrypt_Selected_pmt)
         self.worker_thread.start()
-    #这是getbuuton用来获取查找callFrameId_str_Selected_repeater的函数
     def encrypt_Selected_pmt(self):
         self.urls ="http://127.0.0.1:9222"
         self.chrome = pychrome.Browser(url=self.urls)
@@ -488,7 +464,6 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
     def getbuuton_decrypt(self,event):
         self.worker_thread = Thread(target=self.getbuuton2)
         self.worker_thread.start()
-    #这是getbuuton_decrypt用来获取解密整个body的函数
     def getbuuton2(self):
         self.urls ="http://127.0.0.1:9222"
         self.chrome = pychrome.Browser(url=self.urls)
@@ -517,7 +492,6 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
         self.dncrypt_list = self.decrypt_code_tmp.split("%%")
         time.sleep(int(self.Interval_time.getText()))
     
-    #这里是ui名称
     def getTabCaption(self):
         return "Chrome-cdp"
     
@@ -529,16 +503,13 @@ class BurpExtender(IBurpExtender, ITab, IMessageEditorTabFactory,IMessageEditorT
     def getGeneratorName(self):
         return "My custom payloads"
 
-    #这里是爆破加密得名称
     def getProcessorName(self):
         return "Serialized input wrapper"
-    #这个函数返回的就是加密后的值
+
     def processPayload(self, currentPayload, originalPayload, baseValue):
-        #在加密数据之前统一使用url编码一次，currentPayload默认是两个数组，但是不知道为什么使用""+就会变为字符串
         #currentPayload = urllib.quote(""+currentPayload)
         encrypt_string_inturder =''
         currentPayload_inturder = ""+currentPayload
-        #以%%分割
         self.tmp1_inturder = self.encrypt_list[0].replace("u'","'")
         self.tmp2_inturder = self.encrypt_list[1].replace("u'","'")
         try:
